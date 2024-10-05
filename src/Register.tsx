@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import './LoginRegister.css';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const [username, setUsername] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ username, password });
-    // You can now send these credentials to a backend API
+    console.log({ username, email, password });
+    // Add logic to send data to backend (e.g., API call)
   };
 
   return (
     <div className="container">
       <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2>Register</h2>
         <div className="form-group">
           <label>Username</label>
           <input
@@ -22,6 +23,15 @@ const Login: React.FC = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter your username"
+          />
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
           />
         </div>
         <div className="form-group">
@@ -33,11 +43,11 @@ const Login: React.FC = () => {
             placeholder="Enter your password"
           />
         </div>
-        <button type="submit">Login</button>
-        <p>Don't have an account? Register here!</p>
+        <button type="submit">Register</button>
+        <p>Already have an account? Login here!</p>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default Register;
