@@ -1,40 +1,60 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './LoginRegister.css';
 
-const Login: React.FC = () => {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+interface LoginData {
+  email: string;
+  password: string;
+}
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const Login: React.FC = () => {
+  const [loginData, setLoginData] = useState<LoginData>({
+    email: '',
+    password: '',
+  });
+  const [message, setMessage] = useState<string>('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ username, password });
-    // You can now send these credentials to a backend API
+    try {
+      const res = await axios.post('http://localhost:5000/api/auth/login', loginData);
+      setMessage('Login successful');
+      console.log('Token:', res.data.token); // Handle authentication token
+    } catch (err: any) {
+      setMessage('Invalid credentials');
+    }
   };
 
   return (
     <div className="container">
       <form onSubmit={handleSubmit}>
         <h2>Login</h2>
-        <div className="form-group">
-          <label>Username</label>
+        <div>
+          <label>Email</label>
           <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter your username"
+            type="email"
+            name="email"
+            value={loginData.email}
+            onChange={handleChange}
+            placeholder="Enter your email"
           />
         </div>
-        <div className="form-group">
+        <div>
           <label>Password</label>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={loginData.password}
+            onChange={handleChange}
             placeholder="Enter your password"
           />
         </div>
         <button type="submit">Login</button>
-        <p>Don't have an account? Register here!</p>
+        {message && <p>{message}</p>}
       </form>
     </div>
   );

@@ -1,50 +1,71 @@
 import React, { useState } from 'react';
+import axios from 'axios';  
 import './LoginRegister.css';
 
-const Register: React.FC = () => {
-  const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+}
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const Register: React.FC = () => {
+  const [registerData, setRegisterData] = useState<RegisterData>({
+    username: '',
+    email: '',
+    password: '',
+  });
+  const [message, setMessage] = useState<string>('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRegisterData({ ...registerData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ username, email, password });
-    // Add logic to send data to backend (e.g., API call)
+    try {
+      const res = await axios.post('http://localhost:5000/api/auth/register', registerData);
+      setMessage(res.data.msg); // Show success message
+    } catch (err: any) {
+      setMessage(err.response.data.msg); // Show error message
+    }
   };
 
   return (
     <div className="container">
       <form onSubmit={handleSubmit}>
         <h2>Register</h2>
-        <div className="form-group">
+        <div>
           <label>Username</label>
           <input
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            value={registerData.username}
+            onChange={handleChange}
             placeholder="Enter your username"
           />
         </div>
-        <div className="form-group">
+        <div>
           <label>Email</label>
           <input
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={registerData.email}
+            onChange={handleChange}
             placeholder="Enter your email"
           />
         </div>
-        <div className="form-group">
+        <div>
           <label>Password</label>
           <input
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={registerData.password}
+            onChange={handleChange}
             placeholder="Enter your password"
           />
         </div>
         <button type="submit">Register</button>
-        <p>Already have an account? Login here!</p>
+        {message && <p>{message}</p>}
       </form>
     </div>
   );
