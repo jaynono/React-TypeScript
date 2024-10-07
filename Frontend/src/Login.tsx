@@ -18,16 +18,18 @@ const Login: React.FC = () => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', loginData);
-      setMessage('Login successful');
-      console.log('Token:', res.data.token); // Handle authentication token
-    } catch (err: any) {
-      setMessage('Invalid credentials');
-    }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post('http://localhost:5000/api/auth/login', loginData);
+    setMessage('Login successful');
+    console.log('Token:', res.data.token); // Handle authentication token
+  } catch (err: any) {
+    const errorMsg = err.response?.data?.msg || 'Invalid credentials';
+    setMessage(errorMsg);
+  }
+};
+
 
   return (
     <div className="container">
