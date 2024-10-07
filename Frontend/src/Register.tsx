@@ -20,15 +20,17 @@ const Register: React.FC = () => {
     setRegisterData({ ...registerData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', registerData);
-      setMessage(res.data.msg); // Show success message
-    } catch (err: any) {
-      setMessage(err.response.data.msg); // Show error message
-    }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const res = await axios.post('http://localhost:5000/api/auth/register', registerData);
+    setMessage(res.data.msg); // Show success message
+  } catch (err: any) {
+    const errorMsg = err.response?.data?.msg || "An error occurred during registration";
+    setMessage(errorMsg); // Show error message or fallback
+  }
+};
+
 
   return (
     <div className="container">
